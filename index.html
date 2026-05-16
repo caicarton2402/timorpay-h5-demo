@@ -3,71 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TimorPay - High Fidelity Demo</title>
-    <!-- Tailwind CSS v3 -->
+    <title>TimorPay - High Fidelity Full Demo</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- React & Babel -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: {
-                        primary: '#0077BE',
-                        'primary-dark': '#005a91',
-                        success: '#22C55E',
-                        warning: '#F59E0B',
-                        danger: '#EF4444',
-                        background: '#F8FAFC',
-                        'text-primary': '#1E293B',
-                        'text-secondary': '#64748B',
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                    boxShadow: {
-                        'card': '0 4px 20px rgba(0, 119, 190, 0.08)',
-                    }
+                    colors: { primary: '#0077BE', 'primary-dark': '#005a91', success: '#22C55E', warning: '#F59E0B', danger: '#EF4444', background: '#F8FAFC', 'text-primary': '#1E293B', 'text-secondary': '#64748B' },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
                 }
             }
         }
     </script>
     <style>
-        body {
-            -webkit-tap-highlight-color: transparent;
-            overscroll-behavior: none;
-        }
-        .qr-gradient {
-            background: linear-gradient(135deg, #0077BE 0%, #0096D8 100%);
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in {
-            animation: fadeIn 0.3s ease-out forwards;
-        }
+        body { -webkit-tap-highlight-color: transparent; overscroll-behavior: none; font-family: 'Inter', sans-serif; }
+        .animate-fade-in { animation: fadeIn 0.25s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="bg-gray-100 flex justify-center items-start min-h-screen">
-    <div id="root" class="w-full max-w-[430px] bg-background min-h-screen shadow-2xl relative overflow-hidden"></div>
+<body class="bg-gray-100 flex justify-center min-h-screen">
+    <div id="root" class="w-full max-w-[430px] bg-background min-h-screen shadow-2xl relative overflow-x-hidden overflow-y-auto hide-scrollbar"></div>
 
     <script type="text/babel">
         const { useState, useEffect } = React;
 
-        // --- Components ---
-
         const Icon = ({ name, size = 24, className = "" }) => {
-            useEffect(() => {
-                if (window.lucide) {
-                    window.lucide.createIcons();
-                }
-            }, [name]);
+            useEffect(() => { window.lucide && window.lucide.createIcons(); }, [name]);
             return <i data-lucide={name} style={{ width: size, height: size }} className={className}></i>;
         };
 
@@ -75,239 +42,202 @@
             <div className={`flex justify-between items-center px-6 py-3 text-[12px] font-bold z-50 sticky top-0 ${light ? 'text-white' : 'text-text-primary'}`}>
                 <span>9:41</span>
                 <div className="flex gap-1.5 items-center">
-                    <Icon name="wifi" size={14} />
-                    <Icon name="signal" size={14} />
-                    <div className="w-6 h-3 border border-current rounded-[3px] p-[1px] flex items-center">
-                        <div className="w-full h-full bg-current rounded-[1px]"></div>
+                    <Icon name="wifi" size={14} /> <Icon name="signal" size={14} />
+                    <div className="w-6 h-3 border border-current rounded-[3px] p-[1px]"><div className="w-full h-full bg-current rounded-[1px]"></div></div>
+                </div>
+            </div>
+        );
+
+        const PageHeader = ({ title, onBack, light = false }) => (
+            <div className={`flex items-center justify-between px-6 py-4 ${light ? 'text-white' : 'text-text-primary'}`}>
+                <button onClick={onBack} className={`p-2 rounded-full active:scale-90 transition-transform ${light ? 'bg-white/10' : 'bg-white shadow-sm'}`}>
+                    <Icon name="arrow-left" size={24} />
+                </button>
+                <h1 className="text-xl font-bold">${title}</h1>
+                <div className="w-10"></div>
+            </div>
+        );
+
+        const Home = ({ onNavigate }) => (
+            <div className="animate-fade-in pb-24">
+                <StatusBar />
+                <div className="flex items-center justify-between px-6 py-4">
+                    <div className="flex items-center gap-2">
+                        <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20"><span className="text-white font-bold text-2xl italic">T</span></div>
+                        <span className="text-2xl font-bold tracking-tight text-primary">TimorPay</span>
+                    </div>
+                    <button className="relative p-2 bg-white rounded-full shadow-sm"><Icon name="bell" size={24} /><span className="absolute top-2 right-2 w-2.5 h-2.5 bg-danger rounded-full border-2 border-white"></span></button>
+                </div>
+                <div className="px-6 mt-2">
+                    <div className="bg-gradient-to-br from-[#0077BE] to-[#0096D8] rounded-[32px] p-8 text-white shadow-xl shadow-primary/30 relative overflow-hidden">
+                        <p className="text-white/80 text-sm font-medium mb-1">My Balance</p>
+                        <div className="text-4xl font-bold mb-8">USD 0.00</div>
+                        <div className="flex gap-4">
+                            <button onClick={() => onNavigate('topup')} className="flex-1 flex items-center justify-center gap-2 bg-white/20 border border-white/30 py-4 rounded-2xl font-bold active:scale-95 transition-transform backdrop-blur-sm"><Icon name="plus" size={20} />Top Up</button>
+                            <button onClick={() => onNavigate('transfer')} className="flex-1 flex items-center justify-center gap-2 bg-white text-primary py-4 rounded-2xl font-bold active:scale-95 transition-transform shadow-lg"><Icon name="send" size={20} className="-rotate-45" />Transfer</button>
+                        </div>
+                    </div>
+                </div>
+                <div className="px-6 mt-10">
+                    <div className="grid grid-cols-3 gap-6">
+                        {[
+                            { icon: 'send', label: 'Send Money', color: 'bg-blue-50 text-blue-600', screen: 'send' },
+                            { icon: 'download', label: 'Receive Money', color: 'bg-green-50 text-green-600', screen: 'receive' },
+                            { icon: 'qr-code', label: 'QR Payment', color: 'bg-purple-50 text-purple-600', screen: 'scan' },
+                            { icon: 'layout-grid', label: 'Q Payment', color: 'bg-orange-50 text-orange-600', screen: 'qpay' },
+                            { icon: 'file-text', label: 'Statement', color: 'bg-teal-50 text-teal-600', screen: 'statement' },
+                            { icon: 'more-horizontal', label: 'More', color: 'bg-gray-50 text-gray-600', screen: 'more' },
+                        ].map((item, i) => (
+                            <button key={i} onClick={() => onNavigate(item.screen)} className="flex flex-col items-center gap-3 active:scale-90 transition-transform">
+                                <div className={`w-16 h-16 ${item.color} rounded-[22px] flex items-center justify-center shadow-sm`}><Icon name={item.icon} size={28} /></div>
+                                <span className="text-[12px] font-bold text-text-primary text-center leading-tight">${item.label}</span>
+                            </button>
+                        ))}
+                    </div>
+                </div>
+                <div className="px-6 mt-10">
+                    <div className="flex items-center justify-between mb-6"><h2 className="text-xl font-bold text-text-primary">Recent Activity</h2><button onClick={() => onNavigate('statement')} className="text-primary text-sm font-bold">View All</button></div>
+                    <div className="space-y-4">
+                        {[ { t: 'Top Up Wallet', d: 'Today, 10:45 AM', a: '+ $50.00', i: 'arrow-down-left', c: 'text-success' }, { t: 'Transfer to Bob', d: 'Yesterday, 08:20 PM', a: '- $12.50', i: 'arrow-up-right', c: 'text-text-primary' } ].map((tx, i) => (
+                            <div key={i} className="flex items-center justify-between p-4 bg-white rounded-2xl border border-gray-50">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center"><Icon name={tx.i} /></div>
+                                    <div><p className="font-bold text-text-primary">${tx.t}</p><p className="text-xs text-text-secondary">${tx.d}</p></div>
+                                </div>
+                                <p className={`font-bold text-lg ${tx.c}`}>${tx.a}</p>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>
         );
 
-        const Home = ({ onNavigate }) => {
-            const transactions = [
-                { title: 'Top Up Wallet', date: 'Today, 10:45 AM', amount: '+ $50.00', type: 'in', icon: 'arrow-down-left' },
-                { title: 'Transfer to Bob', date: 'Yesterday, 08:20 PM', amount: '- $12.50', type: 'out', icon: 'arrow-up-right' },
-                { title: 'Payment at Supermarket', date: 'May 14, 2026', amount: '- $24.99', type: 'out', icon: 'arrow-up-right' },
-            ];
+        const TopUp = ({ onBack }) => (
+            <div className="animate-fade-in bg-white min-h-screen p-6">
+                <PageHeader title="Top Up" onBack={onBack} />
+                <div className="mt-8 space-y-4">
+                    <p className="text-text-secondary font-medium">Select Payment Method</p>
+                    {[ { n: 'Bank Transfer', i: 'landmark' }, { n: 'Credit/Debit Card', i: 'credit-card' }, { n: 'Voucher Code', i: 'ticket' } ].map((m, i) => (
+                        <button key={i} className="w-full flex items-center justify-between p-6 bg-gray-50 rounded-3xl active:bg-gray-100 transition-colors">
+                            <div className="flex items-center gap-4"><Icon name={m.i} className="text-primary" /><span className="font-bold">${m.n}</span></div>
+                            <Icon name="chevron-right" size={20} className="text-gray-400" />
+                        </button>
+                    ))}
+                </div>
+            </div>
+        );
 
-            return (
-                <div className="animate-fade-in pb-24">
-                    <StatusBar light={false} />
-                    
-                    {/* Header */}
-                    <div className="flex items-center justify-between px-6 py-4">
-                        <div className="flex items-center gap-2">
-                            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
-                                <span className="text-white font-bold text-2xl italic">T</span>
-                            </div>
-                            <span className="text-2xl font-bold tracking-tight text-primary">TimorPay</span>
-                        </div>
-                        <div className="flex items-center gap-4">
-                            <button className="relative p-2 bg-white rounded-full shadow-sm">
-                                <Icon name="bell" size={24} className="text-text-primary" />
-                                <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-danger rounded-full border-2 border-white"></span>
-                            </button>
-                        </div>
+        const Transfer = ({ onBack }) => (
+            <div className="animate-fade-in bg-white min-h-screen p-6">
+                <PageHeader title="Transfer" onBack={onBack} />
+                <div className="mt-8 space-y-6">
+                    <div className="space-y-4">
+                        <p className="text-text-secondary font-medium">To Account / Phone</p>
+                        <input type="text" placeholder="Enter number or name" className="w-full p-5 bg-gray-50 rounded-2xl font-bold focus:outline-primary" />
                     </div>
-
-                    {/* Balance Card */}
-                    <div className="px-6 mt-2">
-                        <div className="bg-gradient-to-br from-[#0077BE] to-[#0096D8] rounded-[32px] p-8 text-white shadow-xl shadow-primary/30 relative overflow-hidden">
-                            <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
-                            <p className="text-white/80 text-sm font-medium mb-1">My Balance</p>
-                            <div className="flex items-baseline gap-2 mb-8">
-                                <span className="text-4xl font-bold">USD 0.00</span>
-                            </div>
-                            <div className="flex gap-4">
-                                <button className="flex-1 flex items-center justify-center gap-2 bg-white/20 border border-white/30 py-4 rounded-2xl font-bold active:scale-95 transition-transform backdrop-blur-sm">
-                                    <Icon name="plus" size={20} />
-                                    Top Up
-                                </button>
-                                <button className="flex-1 flex items-center justify-center gap-2 bg-white text-primary py-4 rounded-2xl font-bold active:scale-95 transition-transform shadow-lg">
-                                    <Icon name="send" size={20} className="-rotate-45" />
-                                    Transfer
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Quick Functions */}
-                    <div className="px-6 mt-10">
-                        <div className="grid grid-cols-3 gap-6">
-                            {[
-                                { icon: 'send', label: 'Send Money', color: 'bg-blue-50 text-blue-600' },
-                                { icon: 'download', label: 'Receive Money', color: 'bg-green-50 text-green-600' },
-                                { icon: 'qr-code', label: 'QR Payment', color: 'bg-purple-50 text-purple-600', action: () => onNavigate('scan') },
-                                { icon: 'layout-grid', label: 'Q Payment', color: 'bg-orange-50 text-orange-600' },
-                                { icon: 'file-text', label: 'Statement', color: 'bg-teal-50 text-teal-600' },
-                                { icon: 'more-horizontal', label: 'More', color: 'bg-gray-50 text-gray-600' },
-                            ].map((item, index) => (
-                                <button 
-                                    key={index} 
-                                    onClick={item.action}
-                                    className="flex flex-col items-center gap-3 active:scale-90 transition-transform group"
-                                >
-                                    <div className={`w-16 h-16 ${item.color} rounded-[22px] flex items-center justify-center shadow-sm group-hover:shadow-md transition-shadow`}>
-                                        <Icon name={item.icon} size={28} />
-                                    </div>
-                                    <span className="text-[12px] font-bold text-text-primary text-center leading-tight">{item.label}</span>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Transactions */}
-                    <div className="px-6 mt-10">
-                        <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-xl font-bold text-text-primary">Recent Activity</h2>
-                            <button className="text-primary text-sm font-bold">View All</button>
-                        </div>
-                        <div className="space-y-4">
-                            {transactions.map((tx, index) => (
-                                <div key={index} className="flex items-center justify-between p-4 bg-white rounded-2xl shadow-sm border border-gray-50 active:bg-gray-50 transition-colors">
-                                    <div className="flex items-center gap-4">
-                                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${tx.type === 'in' ? 'bg-success/10 text-success' : 'bg-primary/10 text-primary'}`}>
-                                            <Icon name={tx.icon} size={24} />
-                                        </div>
-                                        <div>
-                                            <p className="font-bold text-text-primary">{tx.title}</p>
-                                            <p className="text-xs text-text-secondary font-medium">{tx.date}</p>
-                                        </div>
-                                    </div>
-                                    <p className={`font-bold text-lg ${tx.type === 'in' ? 'text-success' : 'text-text-primary'}`}>{tx.amount}</p>
+                    <div className="space-y-4">
+                        <p className="text-text-secondary font-medium">Recent Contacts</p>
+                        <div className="flex gap-4 overflow-x-auto hide-scrollbar">
+                            {[ 'Alice', 'Bob', 'Charlie', 'David' ].map((name, i) => (
+                                <div key={i} className="flex flex-col items-center gap-2 min-w-[70px]">
+                                    <div className="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold">${name[0]}</div>
+                                    <span className="text-xs font-medium">${name}</span>
                                 </div>
                             ))}
                         </div>
                     </div>
+                    <button className="w-full bg-primary text-white py-5 rounded-2xl font-bold shadow-lg">Next Step</button>
+                </div>
+            </div>
+        );
 
-                    {/* Bottom Navbar */}
-                    <div className="fixed bottom-0 left-0 right-0 max-w-[430px] mx-auto bg-white/80 backdrop-blur-xl border-t border-gray-100 px-8 py-4 flex justify-between items-center z-50">
-                        <button className="flex flex-col items-center gap-1.5 text-primary">
-                            <Icon name="home" size={24} />
-                            <span className="text-[10px] font-bold">Home</span>
-                        </button>
-                        <button className="flex flex-col items-center gap-1.5 text-text-secondary opacity-50">
-                            <Icon name="pie-chart" size={24} />
-                            <span className="text-[10px] font-bold">Stats</span>
-                        </button>
-                        <div className="relative -mt-16">
-                            <button 
-                                onClick={() => onNavigate('scan')}
-                                className="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-white shadow-xl shadow-primary/40 border-4 border-background active:scale-90 transition-transform"
-                            >
-                                <Icon name="scan" size={32} />
-                            </button>
-                        </div>
-                        <button className="flex flex-col items-center gap-1.5 text-text-secondary opacity-50">
-                            <Icon name="wallet" size={24} />
-                            <span className="text-[10px] font-bold">Wallet</span>
-                        </button>
-                        <button className="flex flex-col items-center gap-1.5 text-text-secondary opacity-50">
-                            <Icon name="user" size={24} />
-                            <span className="text-[10px] font-bold">Profile</span>
-                        </button>
+        const ReceiveMoney = ({ onBack }) => (
+            <div className="animate-fade-in bg-primary min-h-screen flex flex-col">
+                <StatusBar light />
+                <PageHeader title="Receive Money" onBack={onBack} light />
+                <div className="flex-1 bg-white rounded-t-[48px] mt-4 p-10 flex flex-col items-center">
+                    <div className="bg-white p-8 rounded-[40px] shadow-2xl border border-gray-50 flex flex-col items-center mb-8">
+                        <div className="w-64 h-64 mb-6"><img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=TimorPay-User" className="w-full h-full" /></div>
+                        <p className="text-center text-text-secondary font-bold">Your Wallet QR Code</p>
+                    </div>
+                    <div className="flex gap-4 w-full">
+                        <button className="flex-1 bg-gray-50 py-4 rounded-2xl font-bold flex items-center justify-center gap-2"><Icon name="share-2" size={20} />Share</button>
+                        <button className="flex-1 bg-primary text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-2"><Icon name="download" size={20} />Save</button>
                     </div>
                 </div>
-            );
-        };
+            </div>
+        );
 
-        const ScanToPay = ({ onBack }) => {
-            return (
-                <div className="animate-fade-in min-h-screen bg-primary flex flex-col">
-                    <StatusBar light={true} />
-                    
-                    {/* Header */}
-                    <div className="flex items-center justify-between px-6 py-4 text-white">
-                        <button onClick={onBack} className="p-3 bg-white/10 rounded-full active:bg-white/20 transition-colors">
-                            <Icon name="arrow-left" size={28} />
-                        </button>
-                        <h1 className="text-2xl font-bold">Scan to Pay</h1>
-                        <div className="w-12"></div>
+        const ScanToPay = ({ onBack }) => (
+            <div className="animate-fade-in bg-primary min-h-screen flex flex-col">
+                <StatusBar light />
+                <PageHeader title="Scan to Pay" onBack={onBack} light />
+                <div className="flex-1 bg-background rounded-t-[48px] mt-4 px-8 pt-12 flex flex-col items-center shadow-2xl">
+                    <div className="w-full max-w-[340px] bg-white rounded-[40px] p-10 shadow-xl flex flex-col items-center mb-8 relative">
+                        <div className="absolute top-0 left-0 w-full h-1 bg-primary/30 animate-[scan_2s_linear_infinite]"></div>
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=Merchant" className="w-48 h-48 mb-6" />
+                        <p className="text-center text-text-secondary font-semibold">Scan Merchant QR Code</p>
                     </div>
-
-                    {/* White Card */}
-                    <div className="flex-1 bg-background rounded-t-[48px] px-8 pt-12 pb-10 flex flex-col items-center shadow-2xl mt-4">
-                        <div className="w-full max-w-[340px] bg-white rounded-[40px] p-10 shadow-2xl shadow-primary/5 flex flex-col items-center mb-10 border border-gray-50">
-                            <div className="relative w-full aspect-square bg-white border-2 border-dashed border-gray-100 rounded-3xl flex items-center justify-center p-6 mb-8 group overflow-hidden">
-                                {/* Animated Scan Line */}
-                                <div className="absolute left-0 right-0 h-1 bg-primary/30 top-0 animate-[scan_2s_linear_infinite]"></div>
-                                
-                                {/* Mock QR */}
-                                <img 
-                                    src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=TimorPay-Demo" 
-                                    alt="QR Code" 
-                                    className="w-full h-full opacity-90"
-                                />
-                                
-                                {/* Corners */}
-                                <div className="absolute top-0 left-0 w-10 h-10 border-t-4 border-l-4 border-primary rounded-tl-2xl"></div>
-                                <div className="absolute top-0 right-0 w-10 h-10 border-t-4 border-r-4 border-primary rounded-tr-2xl"></div>
-                                <div className="absolute bottom-0 left-0 w-10 h-10 border-b-4 border-l-4 border-primary rounded-bl-2xl"></div>
-                                <div className="absolute bottom-0 right-0 w-10 h-10 border-b-4 border-r-4 border-primary rounded-br-2xl"></div>
-                            </div>
-
-                            <p className="text-center text-text-secondary font-semibold text-lg mb-8 leading-relaxed">
-                                Scan this QR code<br />to receive payment
-                            </p>
-
-                            <div className="flex w-full gap-4">
-                                <button className="flex-1 flex items-center justify-center gap-2 border-2 border-gray-100 py-4 rounded-2xl font-bold text-text-primary active:bg-gray-50 transition-colors">
-                                    <Icon name="download" size={20} />
-                                    Save
-                                </button>
-                                <button className="flex-1 flex items-center justify-center gap-2 bg-primary py-4 rounded-2xl font-bold text-white shadow-lg shadow-primary/20 active:bg-primary-dark transition-colors">
-                                    <Icon name="share-2" size={20} />
-                                    Share
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* Merchant Input */}
-                        <div className="w-full space-y-6">
-                            <div className="relative group">
-                                <input 
-                                    type="text" 
-                                    placeholder="输入商家代代码" 
-                                    className="w-full bg-white border border-gray-100 rounded-[24px] py-5 px-8 text-xl font-bold shadow-sm focus:outline-none focus:ring-4 focus:ring-primary/10 transition-all placeholder:text-gray-300"
-                                />
-                                <Icon name="chevron-down" size={24} className="absolute right-8 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors" />
-                            </div>
-
-                            <button 
-                                className="w-full bg-primary py-6 rounded-[24px] text-2xl font-bold text-white shadow-xl shadow-primary/30 active:scale-[0.98] transition-all hover:bg-primary-dark"
-                            >
-                                Confirm Payment
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <style>{`
-                        @keyframes scan {
-                            0% { top: 0; }
-                            50% { top: 100%; }
-                            100% { top: 0; }
-                        }
-                    `}</style>
+                    <input type="text" placeholder="输入商家代代码" className="w-full p-5 bg-white rounded-2xl font-bold mb-6 border border-gray-100" />
+                    <button className="w-full bg-primary text-white py-5 rounded-2xl font-bold shadow-lg">Confirm Payment</button>
+                    <style>{`@keyframes scan { 0% { top: 10%; } 50% { top: 90%; } 100% { top: 10%; } }`}</style>
                 </div>
-            );
-        };
+            </div>
+        );
+
+        const MockPage = ({ title, onBack }) => (
+            <div className="animate-fade-in bg-white min-h-screen p-6">
+                <PageHeader title={title} onBack={onBack} />
+                <div className="mt-20 flex flex-col items-center justify-center opacity-30 text-center">
+                    <Icon name="construction" size={80} />
+                    <h2 className="text-2xl font-bold mt-4">${title} Content</h2>
+                    <p className="font-medium mt-2">Coming soon in full version</p>
+                </div>
+            </div>
+        );
+
+        const Profile = ({ onBack }) => (
+            <div className="animate-fade-in bg-white min-h-screen p-6 pb-24">
+                <div className="flex justify-between items-center mb-10"><h1 className="text-2xl font-bold">Profile</h1><button className="p-2 bg-gray-50 rounded-full"><Icon name="settings" /></button></div>
+                <div className="flex flex-col items-center mb-10">
+                    <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-4"><Icon name="user" size={48} /></div>
+                    <h2 className="text-xl font-bold">Bobonide User</h2>
+                    <p className="text-text-secondary font-medium">+670 7700 0000</p>
+                </div>
+                <div className="space-y-2">
+                    {[ { l: 'Account Security', i: 'shield' }, { l: 'Payment Methods', i: 'credit-card' }, { l: 'Language', i: 'globe' }, { l: 'Help Center', i: 'help-circle' } ].map((item, i) => (
+                        <div key={i} className="flex items-center justify-between p-5 bg-gray-50 rounded-2xl">
+                            <div className="flex items-center gap-4"><Icon name={item.i} size={20} className="text-text-secondary" /><span className="font-bold">${item.l}</span></div>
+                            <Icon name="chevron-right" size={18} className="text-gray-300" />
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
 
         const App = () => {
-            const [currentScreen, setCurrentScreen] = useState('home');
-
-            const navigate = (screen) => {
-                setCurrentScreen(screen);
-                window.scrollTo(0, 0);
-            };
-
+            const [current, setCurrent] = useState('home');
+            const navigate = (s) => { setCurrent(s); window.scrollTo(0, 0); };
             return (
-                <div className="min-h-screen">
-                    {currentScreen === 'home' ? (
-                        <Home onNavigate={navigate} />
-                    ) : (
-                        <ScanToPay onBack={() => navigate('home')} />
-                    )}
+                <div className="min-h-screen relative">
+                    {current === 'home' && <Home onNavigate={navigate} />}
+                    {current === 'topup' && <TopUp onBack={() => navigate('home')} />}
+                    {current === 'transfer' && <Transfer onBack={() => navigate('home')} />}
+                    {current === 'send' && <Transfer onBack={() => navigate('home')} />}
+                    {current === 'receive' && <ReceiveMoney onBack={() => navigate('home')} />}
+                    {current === 'scan' && <ScanToPay onBack={() => navigate('home')} />}
+                    {current === 'qpay' && <MockPage title="Q Payment" onBack={() => navigate('home')} />}
+                    {current === 'statement' && <MockPage title="Statement" onBack={() => navigate('home')} />}
+                    {current === 'more' && <MockPage title="All Services" onBack={() => navigate('home')} />}
+                    {current === 'profile' && <Profile onBack={() => navigate('home')} />}
+                    
+                    <div className="fixed bottom-0 left-0 right-0 max-w-[430px] mx-auto bg-white/80 backdrop-blur-xl border-t border-gray-100 px-8 py-4 flex justify-between items-center z-[100]">
+                        <button onClick={() => navigate('home')} className={`flex flex-col items-center gap-1 ${current === 'home' ? 'text-primary' : 'text-text-secondary opacity-50'}`}><Icon name="home" size={24} /><span className="text-[10px] font-bold">Home</span></button>
+                        <button onClick={() => navigate('statement')} className={`flex flex-col items-center gap-1 ${current === 'statement' ? 'text-primary' : 'text-text-secondary opacity-50'}`}><Icon name="pie-chart" size={24} /><span className="text-[10px] font-bold">Stats</span></button>
+                        <div className="relative -mt-16"><button onClick={() => navigate('scan')} className="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-white shadow-xl shadow-primary/40 border-4 border-background active:scale-90 transition-transform"><Icon name="scan" size={32} /></button></div>
+                        <button onClick={() => navigate('receive')} className={`flex flex-col items-center gap-1 ${current === 'receive' ? 'text-primary' : 'text-text-secondary opacity-50'}`}><Icon name="wallet" size={24} /><span className="text-[10px] font-bold">Receive</span></button>
+                        <button onClick={() => navigate('profile')} className={`flex flex-col items-center gap-1 ${current === 'profile' ? 'text-primary' : 'text-text-secondary opacity-50'}`}><Icon name="user" size={24} /><span className="text-[10px] font-bold">Profile</span></button>
+                    </div>
                 </div>
             );
         };
